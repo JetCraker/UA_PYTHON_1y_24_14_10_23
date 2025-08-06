@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Inline</title>
+</head>
+<body>
+<h2>Продукти категорії: {{ category.name }}</h2>
+<form method="post">
+  {% csrf_token %}
+  {{ formset.management_form }}
+  {% for form in formset %}
+    <div style="margin-bottom: 10px;">
+      {{ form.id }}
+
+      {{ form.name.label_tag }} {{ form.name }}<br>
+      {{ form.price.label_tag }} {{ form.price }}<br>
+      {{ form.DELETE }} Видалити<br>
+    </div>
+  {% endfor %}
+  <button type="submit">Зберегти зміни</button>
+</form>
+</body>
+</html>

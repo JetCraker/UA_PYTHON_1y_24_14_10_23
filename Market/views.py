@@ -1,12 +1,14 @@
-from django.shortcuts import render, redirect
+from cmath import acosh
+
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import NewUserForm, BookForm
+from .forms import NewUserForm, BookForm, ProductForm, ProductInlineFormSet, CategoryFormSet
 from datetime import datetime
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.paginator import Paginator
-from .models import Book
+from .models import Book, Category
 
 
 def index(request):
@@ -122,3 +124,28 @@ def book_list(request):
         'pages': pages,
         'is_published': is_p
     })
+
+
+def create_product(request):
+    form = ProductForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('product_list')
+    return render(request, 'product_form.html', {'form': form})
+
+
+def manage_category(request):
+    formset = CategoryFormSet(request.POST or None, queryset=Category.objects.all())
+    if formset.is_valid():
+        formset.save()
+        return redirect('manage_category')
+    return render(request, 'category_list.html', {'formset': formset})
+
+
+def edit_category_products(request, category_id):
+    category = get_object_or_404(Category, pk=category_id)
+    formset = ProductInlineFormSet(request.POST or None, instance=category)
+    if formset.is_valid():
+        formset.save()
+        return redirect('edit_category_products', category_id=category_id)
+    return render(request, 'product_inline.html', {'category': category, 'formset': formset})

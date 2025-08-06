@@ -1,10 +1,8 @@
-from binascii import b2a_base64
-from gc import set_debug
-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Book
+from .models import Book, Category, Product
+from django.forms import modelform_factory, inlineformset_factory, modelformset_factory
 
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
@@ -53,3 +51,25 @@ class BookForm(forms.ModelForm):
         if commit:
             book.save()
         return book
+
+
+ProductForm = modelform_factory(
+    Product,
+    fields=['name', 'price', 'category'],
+    labels={'name': 'Назва продукту', 'price': 'Ціна продукту', 'category': 'Категорія'}
+)
+
+CategoryFormSet = modelformset_factory(
+    Category,
+    fields=['name'],
+    extra=1,
+    can_delete=True
+)
+
+ProductInlineFormSet = inlineformset_factory(
+    Category,
+    Product,
+    fields=['name', 'price'],
+    extra=2,
+    can_delete=True
+)
