@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Books list</title>
+</head>
+<body>
+<h1>Список книг із пагінацією</h1>
+<ul>
+  {% for book in page.object_list %}
+    <li>{{ book.title }}</li>
+  {% endfor %}
+</ul>
+
+<div class="paginator">
+  {% if page.has_previous %}
+    <a href="?page={{ page.previous_page_number }}"><<</a>
+  {% endif %}
+  <span>Сторінка {{ page.number }} з {{ page.paginator.num_pages }}</span>
+  {% if page.has_next %}
+    <a href="?page={{ page.next_page_number }}">>></a>
+  {% endif %}
+</div>
+</body>
+</html>

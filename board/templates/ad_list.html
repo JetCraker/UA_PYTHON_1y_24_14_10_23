@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Список оголошень</h1>
+<a href="{% url 'ad_create' %}">+ Додати оголошення</a>
+<ul>
+  {% for ad in ads %}
+  <li>
+    <a href="{% url 'ad_detail' ad.pk %}">[{{ ad.rubric.name }}]</a>
+  </li>
+  {% empty %}
+    <li>немає оголошень</li>
+  {% endfor %}
+</ul>
+{% endblock %}

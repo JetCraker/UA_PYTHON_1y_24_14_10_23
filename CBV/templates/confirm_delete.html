@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Видалити статтю ?</h1>
+<p>Ви дійсно хочете видалити `{{ object.title }}`?</p>
+<form method="post">
+  {% csrf_token %}
+  <button type="submit">Так, видалити!</button>
+  <a href="{% url 'article_detail' object.pk %}">Скасувати</a>
+</form>
+{% endblock content %}

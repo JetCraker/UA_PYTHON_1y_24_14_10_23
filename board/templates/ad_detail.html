@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>{{ ad.title }}</h1>
+<p><strong>Рубрика:</strong>{{ ad.rubric.name }}</p>
+<p><strong>Ціна:</strong>{{ ad.price }}</p>
+<p>{{ ad.content }}</p>
+<p>
+  <a href="{% url 'ad_update' ad.pk %}">Редагувати</a>
+  <a href="{% url 'ad_delete' ad.pk %}">Видалити</a>
+  <a href="{% url 'ad_list' %}">Назад до списку</a>
+</p>
+{% endblock %}

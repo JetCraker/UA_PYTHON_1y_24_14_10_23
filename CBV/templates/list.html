@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1>Список статей</h1>
+<ul>
+  {% for art in articles %}
+    <li><a href="{% url 'article_detail' art.pk %}">{{ art.title }}</a></li>
+  {% empty %}<li>Немає статей</li>
+  {% endfor %}
+</ul>
+{% endblock content %}
