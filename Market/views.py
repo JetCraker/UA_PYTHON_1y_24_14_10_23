@@ -1,14 +1,13 @@
-from cmath import acosh
-
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
-from .forms import NewUserForm, BookForm, ProductForm, ProductInlineFormSet, CategoryFormSet
+from .forms import NewUserForm, BookForm, ProductForm, ProductInlineFormSet, CategoryFormSet, RatingForm
 from datetime import datetime
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.paginator import Paginator
-from .models import Book, Category
+from .models import Book, Category, Rating
 
 
 def index(request):
@@ -149,3 +148,24 @@ def edit_category_products(request, category_id):
         formset.save()
         return redirect('edit_category_products', category_id=category_id)
     return render(request, 'product_inline.html', {'category': category, 'formset': formset})
+
+
+@login_required
+def book_detail(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+    user_rating = Rating.objects.filter(book=book, user=request.user).first()
+
+    if request.method == "POST":
+        form = RatingForm(request.POST, instance=user_rating)
+        if form.is_valid():
+            rating = form.save(commit=False)
+            rating.book = book
+            rating.user = request.user
+            rating.save()
+            return redirect('book_detail', pk=book.pk)
+    else:
+        form = RatingForm(instance=user_rating)
+
+    return render(request, 'book_detail.html', {'book': book, 'form': form, 'user_rating': user_rating})
+

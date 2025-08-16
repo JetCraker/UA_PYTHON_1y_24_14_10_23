@@ -1,3 +1,4 @@
+from django.contrib.auth.models import User
 from django.db import models
 
 
@@ -52,8 +53,29 @@ class Book(models.Model):
     is_published = models.BooleanField(default=False, verbose_name='Чи опубліковано')
     status = models.CharField(max_length=2, choices=Status.choices, default=Status.DRAFT)
 
+    def average_rating(self):
+        ratings = self.ratings.all()
+        if ratings.exists():
+            return round(sum(r.value for r in ratings) / ratings.count(), 1)
+        return 0
+
+    def stars_range(self):
+        return range(int(self.average_rating()))
+
     def __str__(self):
         return f"{self.title} - {self.author}"
+
+
+class Rating(models.Model):
+    book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='ratings')
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    value = models.PositiveSmallIntegerField(choices=[(i, str(i)) for i in range(1, 6)])
+
+    class Meta:
+        unique_together = ('book', 'user')
+
+    def __str__(self):
+        return f"{self.user} - {self.book} ({self.value})"
 
 
 class Category(models.Model):
@@ -70,3 +92,5 @@ class Product(models.Model):
 
     def __str__(self):
         return f'{self.name} ({self.category.name})'
+
+

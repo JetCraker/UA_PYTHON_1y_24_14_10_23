@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
-from .models import Book, Category, Product
+from .models import Book, Category, Product, Rating
 from django.forms import modelform_factory, inlineformset_factory, modelformset_factory
 
 class NewUserForm(UserCreationForm):
@@ -73,3 +73,11 @@ ProductInlineFormSet = inlineformset_factory(
     extra=2,
     can_delete=True
 )
+
+class RatingForm(forms.ModelForm):
+    class Meta:
+        model = Rating
+        fields = ['value']
+        widgets = {
+            'value': forms.RadioSelect(choices=[(i, '⭐' * i) for i in range(1, 6)])
+        }

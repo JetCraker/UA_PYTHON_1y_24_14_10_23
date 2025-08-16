@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Book Rating</title>
+</head>
+<body>
+<h1> {{ book.title }}</h1>
+<p>{{ book.description }}</p>
+
+<h3>Середня оцінка:</h3>
+{% if book.average_rating %}
+  {% for _ in book.stars_range %}
+    ⭐
+  {% endfor %}
+  ({{ book.average_rating }})
+{% else %}
+<p>Ще немає оцінок</p>
+{% endif %}
+
+<br>
+<br>
+<br>
+
+{% if user.is_authenticated %}
+  <h3>Ваша оцінка:</h3>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Оцінити</button>
+  </form>
+  {% else %}
+  <p><a href="{% url 'login_p' %}">Увійти</a>, щоб оцінити книгу.</p>
+{% endif %}
+</body>
+</html>
