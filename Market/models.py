@@ -94,3 +94,11 @@ class Product(models.Model):
         return f'{self.name} ({self.category.name})'
 
 
+class Post(models.Model):
+    title = models.CharField(max_length=200)
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    views = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return self.title

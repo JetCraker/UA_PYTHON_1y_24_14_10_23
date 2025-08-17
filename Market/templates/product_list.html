@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Product List</title>
+</head>
+<body>
+<h2>Товари</h2>
+  <ul>    {% for p in products %}
+      <li>
+        <strong>{{ p.name }}</strong> — {{ p.price }} грн
+        <p>{{ p.description }}</p>
+        <a href="{% url 'add_to_cart' p.pk %}">Додати в корзину</a>
+      </li>
+      {% empty %}
+      <li>Немає товарів</li>
+    {% endfor %}
+  </ul>
+  <p><a href="{% url 'cart_view' %}">Перейти в корзину</a></p>
+
+</body>
+</html>

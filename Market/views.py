@@ -1,13 +1,15 @@
 from django.contrib.auth.decorators import login_required
+from django.core.mail import send_mail
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib import messages
+from django.views.decorators.cache import cache_page
 from .forms import NewUserForm, BookForm, ProductForm, ProductInlineFormSet, CategoryFormSet, RatingForm
 from datetime import datetime
 from django.http import HttpResponse, HttpResponseNotFound
 from django.core.paginator import Paginator
-from .models import Book, Category, Rating
+from .models import Book, Category, Rating, Post, Product
 
 
 def index(request):
@@ -169,3 +171,59 @@ def book_detail(request, pk):
 
     return render(request, 'book_detail.html', {'book': book, 'form': form, 'user_rating': user_rating})
 
+
+@cache_page(10)
+def post_list(request):
+    posts = Post.objects.order_by('-views')[:20]
+    return render(request, 'post_list.html', {'posts': posts})
+
+
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+
+    post.views += 1
+    post.save(update_fields=['views'])
+    return render(request, 'post_detail.html', {'post': post})
+
+
+def product_list(request):
+    products = Product.objects.all()
+    return render(request, 'product_list.html', {'products': products})
+
+
+def add_to_cart(request, pk):
+    product = get_object_or_404(Product, pk=pk)
+    cart = request.session.get('cart', {})
+    cart[str(pk)] = cart.get(str(pk), 0) + 1
+    request.session['cart'] = cart
+    request.session.modified = True
+    return redirect('cart_view')
+
+
+def cart_view(request):
+    cart = request.session.get('cart', {})
+    products_ids = [int(i) for i in cart.keys() ]
+    products = Product.objects.filter(pk__in=products_ids)
+    items = []
+    total = 0
+    for p in products:
+        qty = cart.get(str(p.pk), 0)
+        items.append({"product": p, "qty": qty, 'sum': qty * p.price })
+        total += qty * p.price
+    return render(request, 'cart.html', {'items': items, "total": total})
+
+def checkout(request):
+    cart = request.session.get('cart', {})
+    if not cart:
+        return redirect('product_list')
+    admin_email = 'jetcraker@ukr.net'
+    send_mail(
+        'Нове замовлення',
+        f'замовлення: {cart}',
+        admin_email,
+        [admin_email],
+        fail_silently=False
+    )
+    request.session['cart'] = {}
+    request.session.modified = True
+    return render(request, 'checkout_done.html')

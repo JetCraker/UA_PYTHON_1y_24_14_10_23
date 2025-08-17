@@ -15,9 +15,18 @@ urlpatterns = [
     path('books/', views.book_list, name='books_list'),
 
     path('products/add', views.create_product, name='create_product'),
-    path('products/', views.create_product, name='product_list'),
+    # path('products/', views.create_product, name='product_list'),
     path('categories/', views.manage_category, name='manage_category'),
     path('categories/<int:category_id>/products', views.edit_category_products, name='edit_category_products'),
 
-    path('book/<int:pk>/', views.book_detail, name='book_detail')
+    path('book/<int:pk>/', views.book_detail, name='book_detail'),
+
+    path('posts/', views.post_list, name='post_list'),
+    path('post/<int:pk>', views.post_detail, name='post_detail'),
+
+    path('products/', views.product_list, name='product_list'),
+    path('add/<int:pk>/', views.add_to_cart, name='add_to_cart'),
+    path('cart/', views.cart_view, name='cart_view'),
+
+    path('checkout/', views.checkout, name='checkout')
 ]

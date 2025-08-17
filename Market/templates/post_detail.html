@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post Detail</title>
+</head>
+<body>
+<article>
+  <h2>{{ post.title }}</h2>
+  <p>{{ post.body }}</p>
+  <p>Переглядів: {{ post.views }}</p>
+</article>
+<p><a href="{% url 'post_list' %}">Назад</a></p>
+</body>
+</html>

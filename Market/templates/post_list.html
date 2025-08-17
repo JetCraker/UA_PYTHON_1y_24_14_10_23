@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Post List</title>
+</head>
+<body>
+{% load cache %}
+<h2>Популярні пости</h2>
+{% cache 120 "top_posts" %}
+  <ul>
+    {% for p in posts %}
+      <li><a href="{% url 'post_detail' p.pk %}">{{ p.title }}</a> - {{ p.views }}</li>
+    {% empty %}
+      <li>Немає постів</li>
+    {% endfor %}
+  </ul>
+{% endcache %}
+</body>
+</html>
