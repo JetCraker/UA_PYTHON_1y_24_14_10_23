@@ -3,10 +3,12 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from .models import Book, Category, Product, Rating
 from django.forms import modelform_factory, inlineformset_factory, modelformset_factory
+from captcha.fields import CaptchaField
 
 class NewUserForm(UserCreationForm):
     email = forms.EmailField(required=True)
     is_stuff = forms.BooleanField(required=True)
+    captcha = CaptchaField(label='Введіть код з зображення')
 
     class Meta:
         model = User

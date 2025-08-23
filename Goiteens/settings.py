@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'Blog'
+    'Blog',
+    'admiN_panel',
+    'captcha'
 ]
 
 MIDDLEWARE = [
@@ -144,3 +146,6 @@ DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 
 
 LOGIN_URL = reverse_lazy('login_p')
+
+CAPTCHA_FONT_SIZE = 40
+CAPTCHA_LENGTH = 5
